@@ -1,0 +1,724 @@
+1. Quick Sort 
+import java.util.Random;
+
+public class QuickSort {
+    public static void main(String[] args) {
+        int arraySize = 500;  // Choose a suitable array size
+        int[] arr = new int[arraySize];
+        Random random = new Random();
+
+        // Best Case (UnSorted Array)
+        for (int i = 0; i < arraySize / 2; i++) {
+            int temp = arr[i];
+            arr[i] = arr[arraySize - 1 - i];
+            arr[arraySize - 1 - i] = temp;
+        }
+        System.out.println("Best Case:");
+        // measureTime(arr);
+        long startTime = System.nanoTime();
+        // quickSortRandom(arr, 0, arr.length - 1);
+        quickSortBestCase(arr, 0, arr.length - 1);
+        long endTime = System.nanoTime();
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+        
+        // Worst Case (Sorted Array)
+        for (int i = 0; i < arraySize; i++) {
+            arr[i] = i;
+        }
+        System.out.println("\nWorst Case:");
+        measureTime(arr);
+
+        // Average Case (Randomly Shuffled Array)
+        for (int i = 0; i < arraySize; i++) {
+            arr[i] = random.nextInt(arraySize);
+        }
+        System.out.println("\nAverage Case:");
+        measureTime(arr);
+    }
+
+    public static void measureTime(int[] arr) {
+        long startTime = System.nanoTime();
+        quickSort(arr, 0, arr.length - 1);
+        long endTime = System.nanoTime();
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+    }
+
+    public static void quickSort(int[] arr, int low, int high) {
+        if (low < high) {
+            int pivotIndex = Randpartition(arr, low, high);
+            quickSort(arr, low, pivotIndex - 1);
+            quickSort(arr, pivotIndex + 1, high);
+        }
+    }
+
+    public static int partition(int[] arr, int low, int high) {
+        int pivot = arr[low];
+        int i = low + 1;
+        int j = high;
+
+        while (i <= j) {
+            while (i <= j && arr[i] <= pivot) {
+                i++;
+            }
+            while (arr[j] > pivot) {
+                j--;
+            }
+            if (i < j) {
+                int temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+
+        int temp = arr[low];
+        arr[low] = arr[j];
+        arr[j] = temp;
+
+        return j;
+    }
+
+    public static void quickSortRandom(int[] arr, int low, int high) {
+        if (low < high) {
+            int pivotIndex = Randpartition(arr, low, high);
+            quickSortRandom(arr, low, pivotIndex - 1);
+            quickSortRandom(arr, pivotIndex + 1, high);
+        }
+    }
+
+    private static int Randpartition(int[] arr, int low, int high) {
+        // Randomly select pivot index
+        Random random = new Random();
+        int pivotIndex = random.nextInt(high - low + 1) + low;
+
+        // Swap pivot element with the first element
+        int pivot = arr[pivotIndex];
+        int temp = arr[low];
+        arr[low] = pivot;
+        arr[pivotIndex] = temp;
+
+        int i = low + 1;
+        int j = high;
+
+        while (i <= j) {
+            while (i <= j && arr[i] <= pivot) {
+                i++;
+            }
+
+            while (arr[j] > pivot) {
+                j--;
+            }
+
+            if (i < j) {
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+
+        // Swap pivot back to its original position
+        temp = arr[low];    
+        arr[low] = arr[j];
+        arr[j] = temp;
+
+        return j;
+    }
+
+    public static void quickSortBestCase(int[] arr, int low, int high) {
+        if (low < high) {
+            int pivotIndex = middlePivotPartition(arr, low, high);
+            quickSort(arr, low, pivotIndex - 1);
+            quickSort(arr, pivotIndex + 1, high);
+        }
+    }
+
+    public static int middlePivotPartition(int[] arr, int low, int high) {
+        // Choose middle element as pivot
+        int mid = low + (high - low) / 2;
+        int pivot = arr[mid];
+
+        // Swap pivot element with the first element
+        int temp = arr[low];
+        arr[low] = arr[mid];
+        arr[mid] = temp;
+
+        int i = low + 1;
+        int j = high;
+
+        while (i <= j) {
+            while (i <= j && arr[i] <= pivot) {
+                i++;
+            }
+            while (arr[j] > pivot) {
+                j--;
+            }
+            if (i < j) {
+                temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+        }
+
+        // Swap pivot back to its original position
+        temp = arr[low];
+        arr[low] = arr[j];
+        arr[j] = temp;
+
+        return j;
+    }
+    
+}
+
+
+// The inconsistent output is likely due to a combination of factors, such as variations in the pivot selection process and the inherent overhead of measuring execution times. For smaller array sizes, these factors can have a more pronounced effect on the observed execution times.
+
+// To ensure consistent results, it's recommended to run the code multiple times and average the execution times for each case. This will help to smooth out any inconsistencies and provide a more accurate representation of the performance differences between the best, worst, and average cases.
+
+
+2. Merge Sort
+
+import java.util.Arrays;
+import java.util.Random;
+
+public class MergeSort {
+    public static void main(String[] args) {
+        int arraySize = 500;
+        int[] arr = new int[arraySize];
+        Random random = new Random();
+        // Best Case (UnSorted Array)
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i;
+        }
+        reverseArray(arr);
+        
+        System.out.println("Best Case:");
+        long startTime = System.nanoTime();
+        mergeSort(arr);
+        long endTime = System.nanoTime();
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = i;
+        }
+        System.out.println("\nWorst Case:");
+        startTime = System.nanoTime();
+        mergeSort(arr);
+        endTime = System.nanoTime();
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = random.nextInt(1000);
+        }
+        System.out.println("\nAverage Case:");
+        startTime = System.nanoTime();
+        mergeSort(arr);
+        endTime = System.nanoTime();
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+    }
+
+    public static void mergeSort(int[] arr) {
+        if (arr == null || arr.length <= 1)
+            return;
+        int mid = arr.length / 2;
+        int[] left = Arrays.copyOfRange(arr, 0, mid);
+        int[] right = Arrays.copyOfRange(arr, mid, arr.length);
+        mergeSort(left);
+        mergeSort(right);
+        merge(arr, left, right);
+    }
+
+    public static void merge(int[] arr, int[] left, int[] right) {
+        int i = 0, j = 0, k = 0;
+        while (i < left.length && j < right.length) {
+            if (left[i] < right[j]) {
+                arr[k++] = left[i++];
+            } else {
+                arr[k++] = right[j++];
+            }
+        }
+        while (i < left.length) {
+            arr[k++] = left[i++];
+        }
+        while (j < right.length) {
+            arr[k++] = right[j++];
+        }
+    }
+
+    public static void reverseArray(int[] arr) {
+        int arraySize = arr.length;
+       
+        for(int i = 0; i < arr.length/2; i++){
+            int temp = arr[i];
+            arr[i] = arr[arraySize - 1 - i];
+            arr[arraySize - 1 - i] = temp;
+        }
+    }
+}
+
+3. Genetic Algo
+import java.util.Arrays;
+
+public class Practical3 {
+    public static void main(String[] args) {
+        int[][] initialChromosome = {{0, 10, 15, 20}, {5, 0, 9, 10}, {6, 13, 0, 12}, {8, 8, 9, 0}};
+        System.out.println("Initial Chromosome:\n" + Arrays.deepToString(initialChromosome));
+
+        int[][] mutatedChromosome = mutateChromosome(initialChromosome);
+        System.out.println("\nMutated Chromosome:\n" + Arrays.deepToString(mutatedChromosome));
+
+        int[] path = calculatePath(mutatedChromosome);
+        int cost = calculateCost(mutatedChromosome, path);
+
+        System.out.println("\nPath: " + Arrays.toString(path));
+        System.out.println("Cost: " + cost);
+    }
+
+    private static int[] calculatePath(int[][] chromosome) {
+        int[] path = new int[chromosome.length];
+        for (int i = 0; i < chromosome.length; i++) {
+            path[i] = findIndexOfMin(chromosome[i]);
+        }
+        return path;
+    }
+
+    private static int findIndexOfMin(int[] array) {
+        int minIndex = 0;
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < array[minIndex]) {
+                minIndex = i;
+            }
+        }
+        return minIndex;
+    }
+
+    // private static int calculateCost(int[][] chromosome, int[] path) {
+    //     int cost = 0;
+    //     for (int i = 0; i < chromosome.length; i++) {
+    //         int fromCity = path[i];
+    //         int toCity = (i + 1) % chromosome.length;  // Wrap around for the last city
+    //         cost += chromosome[fromCity][toCity];
+    //     }
+    //     return cost;
+    // }
+
+    private static int calculateCost(int[][] chromosome, int[] path) {
+        int cost = 0;
+        for (int i = 0; i < chromosome.length; i++) {
+            int fromCity = path[i];
+            int toCity = path[(i + 1) % chromosome.length];  // Use the order specified in the path array
+            cost += chromosome[fromCity][toCity];
+            System.out.println("Cost of "+ fromCity+ " to " + toCity+ " is: "+ cost);
+        }
+        return cost;
+    }
+    
+    
+
+    private static int[][] mutateChromosome(int[][] chromosome) {
+        // This line creates a copy of the original chromosome. The reason for copying is that we want to modify the order of cities in the copy without changing the original order.
+        // int[][] mutatedChromosome = Arrays.stream(chromosome).map(int[]::clone).toArray(int[][]::new);
+        int[][] mutatedChromosome = Arrays.copyOf(chromosome, chromosome.length);
+
+        // The function randomly selects two indices (index1 and index2) in the range of the number of cities in the chromosome. It ensures that index2 is different from index1 to make a meaningful swap.
+        int index1 = (int) (Math.random() * chromosome.length);
+        int index2;
+        
+        do {
+            index2 = (int) (Math.random() * chromosome.length);
+        } while (index1 == index2);
+
+        // This loop goes through each row in the chromosome and swaps the values at index1 and index2. It's like the robot (or the program) deciding to change the order of two cities in its plan for each possible route.
+        for (int i = 0; i < chromosome.length; i++) {
+            int temp = mutatedChromosome[i][index1];
+            mutatedChromosome[i][index1] = mutatedChromosome[i][index2];
+            mutatedChromosome[i][index2] = temp;
+        }
+        // Finally, the function returns the mutated chromosome, which represents a new order of cities for the robot to visit.
+        return mutatedChromosome;
+    }
+}
+
+
+// This program is like a game for a robot that wants to visit different cities. Each city is like a friend's house, and the robot wants to find the shortest path to visit all of them and come back home.
+
+5. Knapsack
+import java.util.Scanner;
+
+public class Knapsack01DP {
+
+    static int knapSack(int W, int wt[], int val[], int n) {
+        int i, w;
+        int dp[][] = new int[n + 1][W + 1];
+
+        // build table for dp[][] in bottom up manner
+        for (i = 0; i <= n; i++) {
+            for (w = 0; w <= W; w++) {
+                if (i == 0 || w == 0) {
+                    dp[i][w] = 0;
+                } else if (wt[i - 1] <= w) {
+                    dp[i][w] = Math.max(val[i - 1] + dp[i - 1][w - wt[i - 1]], dp[i - 1][w]);
+
+                } else {
+                    dp[i][w] = dp[i - 1][w];
+                }
+            }
+        }
+        return dp[n][W];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.println("Enter the number of items:");
+        int n = scanner.nextInt();
+
+        int profit[] = new int[n];
+        int weight[] = new int[n];
+
+        System.out.println("Enter the profits of the items:");
+        for (int i = 0; i < n; i++) {
+            profit[i] = scanner.nextInt();
+        }
+
+        System.out.println("Enter the weights of the items:");
+        for (int i = 0; i < n; i++) {
+            weight[i] = scanner.nextInt();
+        }
+
+        System.out.println("Enter the maximum weight capacity:");
+        int W = scanner.nextInt();
+
+        long startTime = System.nanoTime();
+        int result = knapSack(W, weight, profit, n);
+        long endTime = System.nanoTime();
+
+        System.out.println("Maximum Profit: " + result);
+        System.out.println("Time taken: " + (endTime - startTime) + " nanoseconds");
+
+        scanner.close();
+    }
+}
+
+
+11. Dining Philosopher Problem
+
+import java.util.concurrent.Semaphore;
+
+public class DiningPhilosophers {
+
+    private static final int NUM_PHILOSOPHERS = 5;
+
+    public static void main(String[] args) {
+    // Semaphore: A semaphore is a synchronization primitive that is used to control access to a resource. 
+    // In this case, each chopstick is considered a resource, and a semaphore is associated with each one.
+
+    // chopsticks: This is the array that holds the Semaphores representing the chopsticks.
+        Semaphore[] chopsticks = new Semaphore[NUM_PHILOSOPHERS];
+
+    // In the context of the Dining Philosophers problem, you can think of this permit as representing the 
+    // availability of the associated chopstick. Since each philosopher initially has one chopstick available, 
+    // the initial permit count is set to 1.
+        for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+            chopsticks[i] = new Semaphore(1);
+        }
+
+        Philosopher[] philosophers = new Philosopher[NUM_PHILOSOPHERS];
+
+        for (int i = 0; i < NUM_PHILOSOPHERS; i++) {
+            philosophers[i] = new Philosopher(i, chopsticks[i], chopsticks[(i + 1) % NUM_PHILOSOPHERS]);
+            new Thread(philosophers[i]).start();
+        }
+    }
+}
+
+class Philosopher implements Runnable {
+
+    private final int id;
+    private final Semaphore leftChopstick;
+    private final Semaphore rightChopstick;
+
+    public Philosopher(int id, Semaphore leftChopstick, Semaphore rightChopstick) {
+        this.id = id;
+        this.leftChopstick = leftChopstick;
+        this.rightChopstick = rightChopstick;
+    }
+
+    private void think() throws InterruptedException {
+        System.out.println("Philosopher " + id + " is thinking.");
+        Thread.sleep((long) (Math.random() * 1000));
+    }
+
+    private void eat() throws InterruptedException {
+        System.out.println("Philosopher " + id + " is eating.");
+        Thread.sleep((long) (Math.random() * 1000));
+    }
+
+    @Override
+    public void run() {
+        try {
+            // This infinite loop represents the continuous cycle of a philosopher thinking, picking up 
+            // chopsticks, eating, and releasing chopsticks.
+            while (true) {
+
+                // This method represents the philosopher thinking
+                think();
+
+                // leftChopstick.acquire();: The philosopher tries to acquire the left chopstick using the 
+                // acquire method of the Semaphore (leftChopstick in this case). If the left chopstick is not 
+                // available, the philosopher will block until it becomes available.
+                leftChopstick.acquire();
+                System.out.println("Philosopher " + id + " picked up left chopstick.");
+
+                // Acquire right chopstick
+                rightChopstick.acquire();
+                System.out.println("Philosopher " + id + " picked up right chopstick.");
+
+                // This method represents the philosopher eating
+                eat();
+
+                // After eating, the philosopher releases both the left and right chopsticks using the release
+                //  method of the Semaphore. This makes the chopsticks available for other philosophers.
+                leftChopstick.release();
+                System.out.println("Philosopher " + id + " released left chopstick.");
+
+                // Release chopsticks
+                rightChopstick.release();
+                System.out.println("Philosopher " + id + " released right chopstick.");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+    }
+}
+
+12. Matrix Multiplication 
+
+import java.util.Scanner;
+
+public class MatrixMultiplication {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of rows for matrix A: ");
+        int rowsA = scanner.nextInt();
+
+        System.out.print("Enter the number of columns for matrix A: ");
+        int colsA = scanner.nextInt();
+
+        System.out.print("Enter the number of rows for matrix B: ");
+        int rowsB = scanner.nextInt();
+
+        System.out.print("Enter the number of columns for matrix B: ");
+        int colsB = scanner.nextInt();
+
+        // Check if multiplication is possible
+        if (colsA != rowsB) {
+            System.out.println("Matrix multiplication is not possible. Number of columns in A must be equal to the number of rows in B.");
+            scanner.close();
+            return;
+        }
+
+        int[][] matrixA = readMatrix(rowsA, colsA, scanner, "A");
+        int[][] matrixB = readMatrix(rowsB, colsB, scanner, "B");
+
+        // Sequential multiplication
+        long startTimeSequential = System.nanoTime();
+        int[][] resultSequential = multiplyMatrixSequential(matrixA, matrixB);
+        long endTimeSequential = System.nanoTime();
+        System.out.println("Sequential Matrix Multiplication Time: " + (endTimeSequential - startTimeSequential) + " nanoseconds");
+
+        // Multithreaded multiplication
+        int numThreads = 4; // You can adjust the number of threads
+        long startTimeMultithreaded = System.nanoTime();
+        int[][] resultMultithreaded = multiplyMatrixMultithreaded(matrixA, matrixB, numThreads);
+        long endTimeMultithreaded = System.nanoTime();
+        System.out.println("Multithreaded Matrix Multiplication Time: " + (endTimeMultithreaded - startTimeMultithreaded) + " nanoseconds");
+
+        // Print results
+        System.out.println("\nMatrix A:");
+        printMatrix(matrixA);
+
+        System.out.println("\nMatrix B:");
+        printMatrix(matrixB);
+
+        System.out.println("\nSequential Result:");
+        printMatrix(resultSequential);
+
+        System.out.println("\nMultithreaded Result:");
+        printMatrix(resultMultithreaded);
+
+        // Check if the results are the same
+        System.out.println("\nResults are equal: " + arraysEqual(resultSequential, resultMultithreaded));
+    }
+
+    private static int[][] readMatrix(int rows, int cols, Scanner scanner, String name) {
+        System.out.println("Enter elements for matrix " + name + ":");
+        int[][] matrix = new int[rows][cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j] = scanner.nextInt();
+            }
+        }
+        return matrix;
+    }
+
+    private static int[][] multiplyMatrixSequential(int[][] matrixA, int[][] matrixB) {
+        int rowsA = matrixA.length;
+        int colsA = matrixA[0].length;
+        int colsB = matrixB[0].length;
+
+        int[][] result = new int[rowsA][colsB];
+
+        for (int i = 0; i < rowsA; i++) {
+            for (int j = 0; j < colsB; j++) {
+                for (int k = 0; k < colsA; k++) {
+                    result[i][j] += matrixA[i][k] * matrixB[k][j];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static int[][] multiplyMatrixMultithreaded(int[][] matrixA, int[][] matrixB, int numThreads) {
+        int rowsA = matrixA.length;
+        int colsA = matrixA[0].length;
+        int colsB = matrixB[0].length;
+  
+        int[][] result = new int[rowsA][colsB];
+        Thread[] threads = new Thread[numThreads];
+
+        for (int i = 0; i < numThreads; i++) {
+            final int startRow = i * rowsA / numThreads;
+            final int endRow = (i + 1) * rowsA / numThreads;
+            
+
+            threads[i] = new Thread(() -> {
+                for (int row = startRow; row < endRow; row++) {
+                    for (int j = 0; j < colsB; j++) {
+                        for (int k = 0; k < colsA; k++) {
+                            result[row][j] += matrixA[row][k] * matrixB[k][j];
+                        }
+                    }
+                }
+            });
+
+            threads[i].start();
+        }
+
+        // Wait for all threads to finish
+        try {
+            for (Thread thread : threads) {
+                thread.join();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private static boolean arraysEqual(int[][] array1, int[][] array2) {
+        for (int i = 0; i < array1.length; i++) {
+            for (int j = 0; j < array1[0].length; j++) {
+                if (array1[i][j] != array2[i][j]) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private static void printMatrix(int[][] matrix) {
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                System.out.print(matrix[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
+
+
+Knapsack Printing Selected Object
+import java.util.Scanner;
+
+public class Knapsack {
+
+    private static int knapsack(int[] values, int[] weights, int capacity) {
+        int n = values.length;
+        int[][] dp = new int[n + 1][capacity + 1];
+
+        for (int i = 0; i <= n; i++) {
+            for (int w = 0; w <= capacity; w++) {
+                if (i == 0 || w == 0) {
+                    dp[i][w] = 0;
+                } else if (weights[i - 1] <= w) {
+                    dp[i][w] = Math.max(values[i - 1] + dp[i - 1][w - weights[i - 1]], dp[i - 1][w]);
+                } else {
+                    dp[i][w] = dp[i - 1][w];
+                }
+            }
+        }
+
+        // Find the items that were selected
+        int maxValue = dp[n][capacity];
+        int w = capacity;
+        int[] selectedItems = new int[n];
+        for (int i = n; i > 0 && maxValue > 0; i--) {
+            if (maxValue != dp[i - 1][w]) {
+                selectedItems[i - 1] = 1;
+                maxValue -= values[i - 1];
+                w -= weights[i - 1];
+            }
+        }
+
+        System.out.println("Selected items for the knapsack:");
+        for (int i = 0; i < n; i++) {
+            if (selectedItems[i] == 1) {
+                System.out.println("Item " + (i + 1) + ": Profit = " + values[i] + ", Weight = " + weights[i]);
+            }
+        }
+
+        return dp[n][capacity];
+    }
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Enter the number of items: ");
+        int n = scanner.nextInt();
+
+        int[] values = new int[n];
+        int[] weights = new int[n];
+
+        System.out.println("Enter the values and weights for each item:");
+        for (int i = 0; i < n; i++) {
+            values[i] = scanner.nextInt();
+            weights[i] = scanner.nextInt();
+        }
+
+        System.out.print("Enter the knapsack capacity: ");
+        int capacity = scanner.nextInt();
+
+        long startTime = System.nanoTime();
+
+        int maxValue = knapsack(values, weights, capacity);
+
+        long endTime = System.nanoTime();
+        long timeComplexity = endTime - startTime;
+
+        System.out.println("Maximum value that can be obtained: " + maxValue);
+        System.out.println("Time Complexity: " + timeComplexity + " nanoseconds");
+
+        // Close the scanner
+        scanner.close();
+    }
+}
+/*
+ * 
+10 2
+15 3
+40 5
+30 4
+90 6
+5  8
+*/
